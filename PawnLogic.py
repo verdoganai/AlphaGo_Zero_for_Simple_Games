@@ -1,6 +1,8 @@
 import random
 import numpy as np
 import copy
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from math import sqrt
 
@@ -87,8 +89,7 @@ class Board(): # includes board rules and successor creator
         new_board[position_1_cord_x][position_1_cord_y] = 0 # delete old position
         new_board[position_2_cord_x][position_2_cord_y] = position2[0]
 
-        # plt.imshow(self.pieces, interpolation='nearest')
-        # plt.show()
+
         return new_board
 
     def get_enemy_pawn(self, reference_pawn): # diagonal move
@@ -150,6 +151,7 @@ class Board(): # includes board rules and successor creator
         return extracted_legal_moves
 
     def board_position_assigner(self, state): # assign any board position as initial board position.
+        self.default_team = state[0]
         self.pieces[:]= state[1]
 
     def random_move(self, list_moves): # random move creator from pawn position.
@@ -174,26 +176,26 @@ class Board(): # includes board rules and successor creator
 
 
 
-new_board = Board()
-new_board.random_board()
+if __name__=='__main__':
+        new_board = Board(default_team = -1)
+        new_board.random_board()
+        successor_list = new_board.create_legal_moves()
+        print('successors:', list(successor_list), len(successor_list))
 
-successor_list = new_board.create_legal_moves()
-print('successors:', list(successor_list), len(successor_list))
+        fig=plt.figure(figsize=(8, 5))
 
-fig=plt.figure(figsize=(8, 5))
-
-row = int(sqrt(len(successor_list))) + 1
-column = int(sqrt(len(successor_list))) +1
-print(row, column)
-for i in range(1, len(successor_list)+1):
-    img = successor_list[i-1][1]
-    fig.add_subplot(row, column, i)
-    plt.imshow(img)
-plt.show()
-# z = x.random_move(y, 1)
-# x.move_executor(z)
-# z = x.random_move(y, 1)
-# x.move_executor(z)
-# print(z)
+        row = int(sqrt(len(successor_list))) + 1
+        column = int(sqrt(len(successor_list))) +1
+        print(row, column)
+        for i in range(1, len(successor_list)+1):
+            img = successor_list[i-1][1]
+            fig.add_subplot(row, column, i)
+            plt.imshow(img)
+        plt.show()
+        # z = x.random_move(y, 1)
+        # x.move_executor(z)
+        # z = x.random_move(y, 1)
+        # x.move_executor(z)
+        # print(z)
 
 
