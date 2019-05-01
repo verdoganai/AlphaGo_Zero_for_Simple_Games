@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from math import sqrt
+from unit_test import *
 
 '''Board class for the game of Pawn Game.
 Default board size is 6x6.
@@ -23,6 +24,7 @@ Based on the board for the game of Othello by Eric P. Nichols.
 '''
 
 class Board(): # includes board rules and successor creator
+
     def __init__(self, n=6, default_team = 1):
         self.n = n
         self.default_team = default_team
@@ -30,12 +32,11 @@ class Board(): # includes board rules and successor creator
         self.pieces = [None] * self.n
         for i in range(self.n):
             self.pieces[i] = [0] * self.n
-        self.pieces[1]=[1] * self.n # First team default position
-        self.pieces[-2]=[-1] * self.n #second team default position
+        self.pieces[0]=[1] * self.n # First team default position
+        self.pieces[-1]=[-1] * self.n #second team default position
 
         print('initial board:', self.pieces)
-        fig = plt.figure(figsize=(3, 3))
-        plt.imshow(self.get_board_coppy())
+
 
     def create_random_index(self, team_color):  # add [][] indexer syntax to the Board
         x = random.randint(1, self.n - 2)
@@ -51,7 +52,6 @@ class Board(): # includes board rules and successor creator
             self.create_random_index(1)
             self.create_random_index(-1)
 
-        print('random initialised board:', self.pieces)
         fig2 = plt.figure(figsize=(3, 3))
         plt.imshow(self.pieces, interpolation='nearest')
 
@@ -117,10 +117,12 @@ class Board(): # includes board rules and successor creator
             created_move_list = [x for x in created_move_list if x[0] == -turn]
         return created_move_list
 
-    def create_legal_moves(self, *input_state): # de
+    def create_legal_moves(self, *input_state):
+
         for state in input_state:    # this input state is optional to start from any board state.
             self.board_position_assigner(state)
             self.default_team = state[0]
+
         legal_moves=[]
         all_pawn_positions = self.get_pawn_positions()
 
@@ -150,7 +152,7 @@ class Board(): # includes board rules and successor creator
         extracted_legal_moves = self.extract_legal_moves_considering_team(legal_moves, self.default_team)
         return extracted_legal_moves
 
-    def board_position_assigner(self, state): # assign any board position as initial board position.
+    def board_position_assigner(self, state): # assign any board position and team as initial state.
         self.default_team = state[0]
         self.pieces[:]= state[1]
 
@@ -160,13 +162,18 @@ class Board(): # includes board rules and successor creator
 
     def check_terminal_state(self, board_state): # winning positions
         turn, board = board_state
-        created_moves = self.create_legal_moves(board_state)
 
+        if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
+            return -self.default_team
+        if 1 in board[-1]:
+            return self.default_team
+
+
+        created_moves = self.create_legal_moves(board_state)
         if not created_moves: # no moves due to no pawn or pawn stacks
             return -self.default_team * turn
 
-        if turn in created_moves[-turn]: # check the last rows if there is pawn or not. We are yellow as default.
-            return self.deafult_team*turn
+
 
     def get_positions_from_action_tuple(self, positions):
         first_position = positions[0]
@@ -175,8 +182,9 @@ class Board(): # includes board rules and successor creator
 
 
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
+        unit_testing().test_moves()
+        unit_testing().winning_positions()
         new_board = Board(default_team = -1)
         new_board.random_board()
         successor_list = new_board.create_legal_moves()
@@ -191,6 +199,7 @@ if __name__=='__main__':
             img = successor_list[i-1][1]
             fig.add_subplot(row, column, i)
             plt.imshow(img)
+
         plt.show()
         # z = x.random_move(y, 1)
         # x.move_executor(z)
