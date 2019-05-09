@@ -5,7 +5,6 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from math import sqrt
-from unit_test import *
 
 '''Board class for the game of Pawn Game.
 Default board size is 6x6.
@@ -25,7 +24,8 @@ Based on the board for the game of Othello by Eric P. Nichols.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n=6, default_team = 1):
+    def __init__(self, n=6, default_team = 1, depth=6):
+        self.depth=depth
         self.n = n
         self.default_team = default_team
         # Create the initial board array.
@@ -37,6 +37,8 @@ class Board(): # includes board rules and successor creator
 
         print('initial board:', self.pieces)
 
+    def __getitem__(self, index):
+        return self.pieces[index]
 
     def create_random_index(self, team_color):  # add [][] indexer syntax to the Board
         x = random.randint(1, self.n - 2)
@@ -54,9 +56,6 @@ class Board(): # includes board rules and successor creator
 
         fig2 = plt.figure(figsize=(3, 3))
         plt.imshow(self.pieces, interpolation='nearest')
-
-    def __getitem__(self, index):
-        return self.pieces[index]
 
     def get_pawn_positions(self): # help to get pawn positions with the team colour '-1' or '1'
         pawn_position_list = set()
@@ -117,7 +116,7 @@ class Board(): # includes board rules and successor creator
             created_move_list = [x for x in created_move_list if x[0] == -turn]
         return created_move_list
 
-    def create_legal_moves(self, *input_state):
+    def successor_generator(self, *input_state):
 
         for state in input_state:    # this input state is optional to start from any board state.
             self.board_position_assigner(state)
@@ -160,19 +159,17 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-    def check_terminal_state(self, board_state): # winning positions
+    def utility_statics(self, board_state): # winning positions
         turn, board = board_state
 
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
-            return -self.default_team
+            return -self.default_team*100
         if 1 in board[-1]:
-            return self.default_team
+            return self.default_team*100
 
-
-        created_moves = self.create_legal_moves(board_state)
+        created_moves = self.successor_generator(board_state)
         if not created_moves: # no moves due to no pawn or pawn stacks
-            return -self.default_team * turn
-
+            return -self.default_team * turn * 100
 
 
     def get_positions_from_action_tuple(self, positions):
@@ -183,11 +180,9 @@ class Board(): # includes board rules and successor creator
 
 
 if __name__ == '__main__':
-        unit_testing().test_moves()
-        unit_testing().winning_positions()
         new_board = Board(default_team = -1)
         new_board.random_board()
-        successor_list = new_board.create_legal_moves()
+        successor_list = new_board.successor_generator()
         print('successors:', list(successor_list), len(successor_list))
 
         fig=plt.figure(figsize=(8, 5))
