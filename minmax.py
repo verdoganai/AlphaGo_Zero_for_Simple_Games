@@ -2,27 +2,24 @@ from PawnLogic import Board
 from unit_test import *
 
 
-class Minimax:
+class Minimax(Board):
 
-    def __init__(self, board_state):
-        new_board = Board(default_team=board_state[0])
-        new_board.board_position_assigner(board_state)
 
     def minimax(self, board_state, a, b):
         turn, board = board_state
-        if new_board.utility_statics(board_state):
-            return new_board.utility_statics(board_state)
+        if super().utility_statics(board_state):
+            return super().utility_statics(board_state)
         else:
             if turn == -1:
                 value = 250
-                for x in new_board.successor_generator(board_state):
+                for x in super().successor_generator(board_state):
                     value = min(value, self.minimax(x, a, b))
                     b = min(b, value)
                     if b <= a:
                         break
             elif turn == 1:
                 value = -250
-                for x in new_board.successor_generator(board_state):
+                for x in super().successor_generator(board_state):
                     value = max(value, self.minimax(x, a, b))
                     a = max(a, value)
                     if b <= a:
@@ -32,9 +29,9 @@ class Minimax:
 
 
 
-    def decisionmaker(self, board_state):
+    def decision_maker(self, board_state):
         compare = {1: max, -1: min}
-        last_generation = new_board.successors_generator(board_state)
+        last_generation = super().successor_generator(board_state)
         # last_generation creates three successors e.g. [10, max] [9,max] [8,max]
         last_generation_utilies = [self.minimax(x, -250, 250) for x in last_generation]
         # last_generation utilites basically estimates utility values for each successor.
@@ -53,11 +50,11 @@ class Minimax:
 if __name__ == '__main__':
     unit_testing().test_moves()
     unit_testing().winning_positions()
-    initial_state = (1, [[0, 0, 0, 0, 1, 0],
-                        [0, 1, 0, 1, 0, 0],
-                        [0, 0, 1, 0, 0, 1],
-                        [1, -1, 0, 0, 0, 0],
-                        [-1, 0, -1, 0, 0, 0],
-                        [0, 0, 0, 0, -1, 0]])
-    new_board = Minimax(initial_state)
-    new_board.decisionmaker(initial_state)
+    initial_state = (-1, [[0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0, 0],
+                        [0, -1, 0, 0, 0, 0],
+                        [-1, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0]])
+    new_board = Minimax()
+    new_board.decision_maker(initial_state)

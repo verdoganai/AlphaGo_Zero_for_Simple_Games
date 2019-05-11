@@ -95,18 +95,15 @@ class Board(): # includes board rules and successor creator
         all_pawn_positions = self.get_pawn_positions()
         new_successor=[]
         for target_pawn in all_pawn_positions: # target_pawn includes team colour and pawn cordinates. (1, (3, 4)).
-
             target_pawn_team, target_pawn_cordinates = target_pawn
             reference_pawn_team, reference_pawn_cordinates = reference_pawn
             diagonal_difference = np.subtract(reference_pawn_cordinates, target_pawn_cordinates)
             # e.g. (1, (3, 4)) vs (-1, (4, 5)). Team colour also helps us to realise this equation.
             if (-target_pawn_team == reference_pawn_team) and (diagonal_difference[0] == -1*reference_pawn_team) and(abs(diagonal_difference[1]) == 1):
-
                 new_pawn_position = (-target_pawn_team,) + target_pawn[1:]
                 executed_board_position = self.move_executor((reference_pawn, new_pawn_position))
                 new_successor.append((-reference_pawn_team, executed_board_position))
                 continue
-
         if new_successor == None:
             return False
         return new_successor
@@ -124,7 +121,6 @@ class Board(): # includes board rules and successor creator
 
         legal_moves=[]
         all_pawn_positions = self.get_pawn_positions()
-
         #First move creator (forward)
         for active_pawn in all_pawn_positions:
             target_location = (active_pawn[0], ((active_pawn[1][0]+active_pawn[0]),)+ active_pawn[1][1:])
@@ -134,7 +130,6 @@ class Board(): # includes board rules and successor creator
                 new_successor = self.move_executor((active_pawn, target_location))
                 legal_moves.append((-active_pawn[0], new_successor))
             except AssertionError as error:
-                print('there is another pawn, this move removed from the list:', target_location)
                 continue
 
         #Second move creator (diagonal)
@@ -142,12 +137,10 @@ class Board(): # includes board rules and successor creator
             try:
                 assert self.get_enemy_pawn(active_pawn)
                 target_pawn = self.get_enemy_pawn(active_pawn)
-                print('enemy spotted', target_pawn)
                 legal_moves.extend(target_pawn)
             except AssertionError as error:
-                print('no enemy')
                 continue
-
+        print(len(legal_moves))
         extracted_legal_moves = self.extract_legal_moves_considering_team(legal_moves, self.default_team)
         return extracted_legal_moves
 
