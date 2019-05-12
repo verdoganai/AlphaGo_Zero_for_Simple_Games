@@ -3,8 +3,6 @@ from unit_test import *
 
 
 class Minimax(Board):
-
-
     def minimax(self, board_state, a, b):
         turn, board = board_state
         if super().utility_statics(board_state):
@@ -27,8 +25,6 @@ class Minimax(Board):
         result = board_state, value
         return value
 
-
-
     def decision_maker(self, board_state):
         compare = {1: max, -1: min}
         last_generation = super().successor_generator(board_state)
@@ -37,14 +33,12 @@ class Minimax(Board):
         # last_generation utilites basically estimates utility values for each successor.
         combined = list(zip(last_generation, last_generation_utilies))
         # e.g. [(10, max), 100] [(9, max), 100] [(8, max), -100]
-        print(combined)
         best_selector = compare[board_state[0]]
         # best_selector call
         # s function from dictionary. E.g. for above situation, it calls object 'min' from (11, min)
         result = best_selector(combined, key=lambda item: item[1])
         # Since best_successor called the function to make decision of minimum values of array, it finds minimum value
         # E.g. [(10, max), 100] [(9, max), 100] [(8, max), -100] = [(8, max), -100]
-        print(result)
         return (result)
 
 if __name__ == '__main__':

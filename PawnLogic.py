@@ -35,8 +35,6 @@ class Board(): # includes board rules and successor creator
         self.pieces[0]=[1] * self.n # First team default position
         self.pieces[-1]=[-1] * self.n #second team default position
 
-        print('initial board:', self.pieces)
-
     def __getitem__(self, index):
         return self.pieces[index]
 
@@ -140,7 +138,6 @@ class Board(): # includes board rules and successor creator
                 legal_moves.extend(target_pawn)
             except AssertionError as error:
                 continue
-        print(len(legal_moves))
         extracted_legal_moves = self.extract_legal_moves_considering_team(legal_moves, self.default_team)
         return extracted_legal_moves
 
@@ -177,9 +174,7 @@ if __name__ == '__main__':
         new_board.random_board()
         successor_list = new_board.successor_generator()
         print('successors:', list(successor_list), len(successor_list))
-
         fig=plt.figure(figsize=(8, 5))
-
         row = int(sqrt(len(successor_list))) + 1
         column = int(sqrt(len(successor_list))) +1
         print(row, column)

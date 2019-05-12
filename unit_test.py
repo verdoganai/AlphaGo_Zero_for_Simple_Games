@@ -90,46 +90,40 @@ class unit_testing(unittest.TestCase):
         compare_yellow_team = (teams['Yellow'], reference_board_states0)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, -100)
-        print('1 done')
 
         compare_yellow_team = (teams['Yellow'], reference_board_states1)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, 100)
-        print('2 done')
 
         compare_yellow_team = (teams['Yellow'], reference_board_states2)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, -100)
-        print('3 done')
 
         compare_yellow_team = (teams['Yellow'], reference_board_states4)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, -100)
 
-        print('yellow done')
+        print('Test Yellow Team done')
 
         test_board.default_team = teams['Purple']
         compare_yellow_team = (teams['Purple'], reference_board_states0)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, 100)
-        print('1 done')
 
         compare_yellow_team = (teams['Purple'], reference_board_states1)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, -100)
-        print('2 done')
 
         compare_yellow_team = (teams['Purple'], reference_board_states2)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, -100)
-        print('3 done')
 
         compare_yellow_team = (teams['Purple'], reference_board_states3)
         terminal_state_value = test_board.utility_statics(compare_yellow_team)
         self.assertEqual(terminal_state_value, -100)
-        print('4 done')
+        print('Test Purple Team done')
 
-        print('winning test succesful')
+        print('unit test succesful')
 
 
 
