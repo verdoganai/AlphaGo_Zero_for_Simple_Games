@@ -13,13 +13,13 @@ class Player:
 
     def random_player(self, state):  # choose random state from successors.
         player2 = Board()
-        succ_list = player2.successors_generator(state)
+        succ_list = player2.successor_generator(state)
         random_move = random.randint(0, len(succ_list) - 1)
         return succ_list[random_move]
 
     def human_player(self, state):
         player3 = Board()
-        succ_list = player3.successors_generator(state)
+        succ_list = player3.successor_generator(state)
         print('Current State is:', state)
         for x, elem in enumerate(succ_list):
             print('{0}:{1}'.format(x, elem[1]))

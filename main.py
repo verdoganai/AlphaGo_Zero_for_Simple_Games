@@ -14,5 +14,10 @@ if __name__ == '__main__':
                         [-1, 0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0, 0]])
     game_player = Player()
-    move = game_.minimax_ai_player(initial_state)
-    print(move)
+    move = game_player.minimax_ai_player(initial_state)
+    move1 = game_player.random_player(initial_state)
+    move2 = game_player.human_player(initial_state)
+    print('ai move', move)
+    print('random_move', move1)
+    print('human move', move2)
+2

@@ -85,8 +85,6 @@ class Board(): # includes board rules and successor creator
         new_board = self.get_board_coppy()
         new_board[position_1_cord_x][position_1_cord_y] = 0 # delete old position
         new_board[position_2_cord_x][position_2_cord_y] = position2[0]
-
-
         return new_board
 
     def get_enemy_pawn(self, reference_pawn): # diagonal move
@@ -153,13 +151,13 @@ class Board(): # includes board rules and successor creator
         turn, board = board_state
 
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
-            return -self.default_team*100
+            return -turn*100
         if 1 in board[-1]:
-            return self.default_team*100
+            return turn*100
 
         created_moves = self.successor_generator(board_state)
         if not created_moves: # no moves due to no pawn or pawn stacks
-            return -self.default_team * turn * 100
+            return turn*-100
 
 
     def get_positions_from_action_tuple(self, positions):

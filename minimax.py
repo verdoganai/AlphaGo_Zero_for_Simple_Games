@@ -33,6 +33,7 @@ class Minimax(Board):
         # last_generation utilites basically estimates utility values for each successor.
         combined = list(zip(last_generation, last_generation_utilies))
         # e.g. [(10, max), 100] [(9, max), 100] [(8, max), -100]
+        print(combined)
         best_selector = compare[board_state[0]]
         # best_selector call
         # s function from dictionary. E.g. for above situation, it calls object 'min' from (11, min)
@@ -45,10 +46,10 @@ if __name__ == '__main__':
     unit_testing().test_moves()
     unit_testing().winning_positions()
     initial_state = (-1, [[0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, -1, 0, 0, 0, 0],
-                        [-1, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0]])
+                         [0, 0, 0, 0, 0, 0],
+                         [0, 0, 1, 0, 0, 0],
+                         [0, -1, 0, 0, 0, 0],
+                         [-1, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0]])
     new_board = Minimax()
     new_board.decision_maker(initial_state)
