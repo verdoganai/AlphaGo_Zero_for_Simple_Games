@@ -19,7 +19,6 @@ Squares are stored and manipulated as (x,y) tuples.
 Author: Vural Erdogan, github.com/vuralerdoganai
 Date: March 6, 2019.
 
-Based on the board for the game of Othello by Eric P. Nichols.
 '''
 
 class Board(): # includes board rules and successor creator
