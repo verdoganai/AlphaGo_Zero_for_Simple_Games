@@ -147,25 +147,58 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-    def utility_statics(self, board_state): # winning positions
+    def terminal_state(self, board_state, depth): # winning positions
         turn, board = board_state
-
-        if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
-            return -turn*100
-        if 1 in board[-1]:
-            return turn*100
-
+        if -1 in board[0] or 1 in board[-1] or depth == 0:  # check the last rows if there is pawn or not. We are yellow as default.
+            return True     #turn will be always "1"
         created_moves = self.successor_generator(board_state)
         if not created_moves: # no moves due to no pawn or pawn stacks
-            return turn*-100
+            return True
+        else:
+            return False
 
+
+    def heuristic_value(self, board_state):  # manhattan distance has been used for heuristic.
+        turn, board = board_state
+        if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
+            return -100  # turn will be always "1"
+        if 1 in board[-1]:
+            return 100  # turn will be alway "-1"
+        created_moves = self.successor_generator(board_state)
+        if not created_moves:  # no moves due to no pawn or pawn stacks
+            return turn * (-100)
+
+        self.board_position_assigner(board_state)
+        pawn_positions_list = self.get_pawn_positions()
+
+        yellow_team = []
+        purple_team = []
+        board_size_x, board_size_y = np.asarray(board).shape
+        promotion_value = 0
+        for pawn in pawn_positions_list:
+            if 1 == pawn[0]: # team colour is pawn[0]
+                promotion_value += pawn[1][0] - (len(board)-1)
+                yellow_team.append(pawn)
+
+            elif -1 == pawn[0]:
+                promotion_value +=  pawn[1][0]
+                purple_team.append(pawn)
+            else:
+                raise Exception('pawn list has some values different from team values.')
+
+        pawn_number_difference_value = (len(yellow_team) - len(purple_team) + 1)* abs(len(yellow_team)-len(purple_team))
+
+        utility_value = promotion_value + pawn_number_difference_value
+
+        if turn == 1:
+           return (utility_value)
+        else:
+            return (-utility_value)
 
     def get_positions_from_action_tuple(self, positions):
         first_position = positions[0]
         second_position = positions[1]
         return first_position, second_position
-
-
 
 if __name__ == '__main__':
         new_board = Board(default_team = -1)

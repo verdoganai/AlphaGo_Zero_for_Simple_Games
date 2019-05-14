@@ -57,14 +57,14 @@ class unit_testing(unittest.TestCase):
                  'Yellow': 1}
 
 
-        reference_board_states0 = (1,[[0, 0, 0, 0, -1, 0],
+        reference_board_states0 = (1, [[0, 0, 0, 0, -1, 0],
                                        [0, 0, 0, 0, 0, 0],
                                        [0, 0, 0, 0, 0, 0],
                                        [0, 0, 0, 0, 0, 0],
                                        [0, 1, 0, 0, 0, 0],
                                        [0, 0, 0, 0, 0, 0]])
 
-        reference_board_states1 = (1, [[0, 0, 0, 0, 0, 0],
+        reference_board_states1 = (-1,[[0, 0, 0, 0, 0, 0],
                                       [0, 0, 0, 0, -1, 0],
                                       [0, 0, 0, 0, 0, 0],
                                       [0, 0, 0, 0, 0, 0],
@@ -93,32 +93,26 @@ class unit_testing(unittest.TestCase):
                                        [0, 0, 0, 0, 0, 0]])
 
 
-        terminal_state_value = test_board.utility_statics(reference_board_states0)
+        terminal_state_value = test_board.heuristic_value(reference_board_states0)
         self.assertEqual(terminal_state_value, -100)
 
-        terminal_state_value = test_board.utility_statics(reference_board_states1)
-        self.assertEqual(terminal_state_value, 100)
-
-        terminal_state_value = test_board.utility_statics(reference_board_states2)
+        terminal_state_value = test_board.heuristic_value(reference_board_states2)
         self.assertEqual(terminal_state_value, -100)
 
-        terminal_state_value = test_board.utility_statics(reference_board_states4)
+        terminal_state_value = test_board.heuristic_value(reference_board_states4)
         self.assertEqual(terminal_state_value, -100)
 
         print('Test Yellow Team done')
 
 
-        terminal_state_value = test_board.utility_statics(self.toggle(reference_board_states0))
+        terminal_state_value = test_board.heuristic_value((reference_board_states1))
         self.assertEqual(terminal_state_value, 100)
 
-        terminal_state_value = test_board.utility_statics(self.toggle(reference_board_states1))
-        self.assertEqual(terminal_state_value, -100)
+        terminal_state_value = test_board.heuristic_value(self.toggle(reference_board_states2))
+        self.assertEqual(terminal_state_value, 100)
 
-        terminal_state_value = test_board.utility_statics(self.toggle(reference_board_states2))
-        self.assertEqual(terminal_state_value, -100)
-
-        terminal_state_value = test_board.utility_statics(reference_board_states3)
-        self.assertEqual(terminal_state_value, -100)
+        terminal_state_value = test_board.heuristic_value(reference_board_states3)
+        self.assertEqual(terminal_state_value, 100)
         print('Test Purple Team done')
 
         print('unit test succesful')
