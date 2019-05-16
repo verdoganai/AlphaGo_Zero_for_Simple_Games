@@ -146,7 +146,7 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-    def terminal_state(self, board_state, depth): # winning positions
+    def terminal_state(self, board_state, *depth): # winning positions
         turn, board = board_state
         if -1 in board[0] or 1 in board[-1] or depth == 0:  # check the last rows if there is pawn or not. We are yellow as default.
             return True     #turn will be always "1"
