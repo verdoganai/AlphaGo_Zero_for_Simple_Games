@@ -1,13 +1,12 @@
 import unittest
 from PawnLogic import Board
-
+import numpy as np
 
 class unit_testing(unittest.TestCase):
 
+
     def test_moves(self):
-        test_board = Board()
-        teams = {'Purple': -1,
-                 'Yellow': 1}
+
 
         reference_board_state = ([[0, 0, 0, 0, 0, 0],
                                 [0, 0, 1, 1, 1, 0],
@@ -15,6 +14,13 @@ class unit_testing(unittest.TestCase):
                                 [1, -1, 0, 0, 0, 0],
                                 [-1, -1, 0, 1, 0, -1],
                                 [0, 0, 0, 0, 0, 0]])
+
+        board_size = np.asarray(reference_board_state).shape
+        test_board = Board(n=board_size)
+
+        teams = {'Purple': -1,
+                 'Yellow': 1}
+
 
         compare_yellow_team = (teams['Yellow'], reference_board_state)
         test_board.board_position_assigner(compare_yellow_team)
@@ -52,9 +58,7 @@ class unit_testing(unittest.TestCase):
         return new_state
 
     def winning_positions(self):
-        test_board = Board()
-        teams = {'Purple': -1,
-                 'Yellow': 1}
+
 
 
         reference_board_states0 = (1, [[0, 0, 0, 0, -1, 0],
@@ -92,27 +96,31 @@ class unit_testing(unittest.TestCase):
                                        [0, 0, 0, 0, 0, 0],
                                        [0, 0, 0, 0, 0, 0]])
 
+        board_size = np.asarray(reference_board_states0[1]).shape
+        test_board = Board(n=board_size, default_team = -1)
+        teams = {'Purple': -1,
+                 'Yellow': 1}
 
         terminal_state_value = test_board.heuristic_value(reference_board_states0)
-        self.assertEqual(terminal_state_value, -100)
+        self.assertEqual(terminal_state_value, test_board.default_team*-100)
 
         terminal_state_value = test_board.heuristic_value(reference_board_states2)
-        self.assertEqual(terminal_state_value, -100)
+        self.assertEqual(terminal_state_value, test_board.default_team*-100)
 
         terminal_state_value = test_board.heuristic_value(reference_board_states4)
-        self.assertEqual(terminal_state_value, -100)
+        self.assertEqual(terminal_state_value, test_board.default_team*-100)
 
         print('Test Yellow Team done')
 
 
         terminal_state_value = test_board.heuristic_value((reference_board_states1))
-        self.assertEqual(terminal_state_value, 100)
+        self.assertEqual(terminal_state_value, test_board.default_team*100)
 
         terminal_state_value = test_board.heuristic_value(self.toggle(reference_board_states2))
-        self.assertEqual(terminal_state_value, 100)
+        self.assertEqual(terminal_state_value, test_board.default_team*100)
 
         terminal_state_value = test_board.heuristic_value(reference_board_states3)
-        self.assertEqual(terminal_state_value, 100)
+        self.assertEqual(terminal_state_value, test_board.default_team*100)
         print('Test Purple Team done')
 
         print('unit test succesful')

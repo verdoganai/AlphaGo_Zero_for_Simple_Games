@@ -4,9 +4,8 @@ from PawnLogic import Board
 
 class Player:
 
-    def minimax_ai_player(self, state):  # creates first successors to implement minimax algorithm.
-
-        player1 = Minimax()
+    def ai_player(self, state, team = 1):  # creates first successors to implement minimax algorithm
+        player1 = Minimax(default_team = team)
         best_move = player1.decision_maker(state)
         chosen_succ, utility = best_move
         return (chosen_succ)

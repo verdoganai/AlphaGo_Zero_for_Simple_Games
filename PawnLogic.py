@@ -23,16 +23,19 @@ Date: March 6, 2019.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n=6, default_team = 1, depth=6):
-        self.depth=depth
+    def __init__(self, n=(5,5), default_team = None, turn = None):
         self.n = n
+        self.x = n[0]
+        self.y = n[1]
         self.default_team = default_team
+        self.turn = turn
         # Create the initial board array.
-        self.pieces = [None] * self.n
-        for i in range(self.n):
-            self.pieces[i] = [0] * self.n
-        self.pieces[0]=[1] * self.n # First team default position
-        self.pieces[-1]=[-1] * self.n #second team default position
+        self.pieces = [None] * self.x
+        for i in range(self.x):
+            self.pieces[i] = [0] * self.y
+        self.pieces[0]=[1] * self.y # First team default position
+        self.pieces[-1]=[-1] * self.y #second team default position
+        print('default_team', self.default_team)
 
     def __getitem__(self, index):
         return self.pieces[index]
@@ -56,8 +59,8 @@ class Board(): # includes board rules and successor creator
 
     def get_pawn_positions(self): # help to get pawn positions with the team colour '-1' or '1'
         pawn_position_list = set()
-        for y in range(self.n):
-            for x in range(self.n):
+        for y in range(self.y):
+            for x in range(self.x):
                 if not self[x][y] == 0:
                     pawn_position_list.add((self[x][y],(x, y)))
         return list(pawn_position_list)
@@ -103,16 +106,14 @@ class Board(): # includes board rules and successor creator
             return False
         return new_successor
 
-    def extract_legal_moves_considering_team(self, created_move_list, turn = None):
-        if turn:
-            created_move_list = [x for x in created_move_list if x[0] == -turn]
+    def extract_legal_moves_considering_team(self, created_move_list, team = None):
+        if team:
+            created_move_list = [x for x in created_move_list if x[0] == -team]
         return created_move_list
 
     def successor_generator(self, *input_state):
-
         for state in input_state:    # this input state is optional to start from any board state.
             self.board_position_assigner(state)
-            self.default_team = state[0]
 
         legal_moves=[]
         all_pawn_positions = self.get_pawn_positions()
@@ -135,20 +136,22 @@ class Board(): # includes board rules and successor creator
                 legal_moves.extend(target_pawn)
             except AssertionError as error:
                 continue
-        extracted_legal_moves = self.extract_legal_moves_considering_team(legal_moves, self.default_team)
+        extracted_legal_moves = self.extract_legal_moves_considering_team(legal_moves, self.turn)
         return extracted_legal_moves
 
     def board_position_assigner(self, state): # assign any board position and team as initial state.
-        self.default_team = state[0]
+        self.turn = state[0]
         self.pieces[:]= state[1]
 
     def random_move(self, list_moves): # random move creator from pawn position.
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-    def terminal_state(self, board_state, *depth): # winning positions
+    def terminal_state(self, board_state, depth=None): # winning positions
+        if depth == 0:
+            return True
         turn, board = board_state
-        if -1 in board[0] or 1 in board[-1] or depth == 0:  # check the last rows if there is pawn or not. We are yellow as default.
+        if -1 in board[0] or 1 in board[-1]:   # check the last rows if there is pawn or not. We are yellow as default.
             return True     #turn will be always "1"
         created_moves = self.successor_generator(board_state)
         if not created_moves: # no moves due to no pawn or pawn stacks
@@ -157,42 +160,39 @@ class Board(): # includes board rules and successor creator
             return False
 
 
-    def heuristic_value(self, board_state):  # manhattan distance has been used for heuristic.
+    def heuristic_value(self, board_state, depth = None):
+        assert self.terminal_state(board_state, depth)# manhattan distance has been used for heuristic.
         turn, board = board_state
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
-            return -100  # turn will be always "1"
+            return -100*self.default_team  # turn will be always "1"
         if 1 in board[-1]:
-            return 100  # turn will be alway "-1"
+            return 100*self.default_team  # turn will be alway "-1"
         created_moves = self.successor_generator(board_state)
         if not created_moves:  # no moves due to no pawn or pawn stacks
-            return turn * (-100)
+            return (-100)*turn*self.default_team
+        if depth:
+            self.board_position_assigner(board_state)
+            pawn_positions_list = self.get_pawn_positions()
+            yellow_team = []
+            purple_team = []
+            board_size_x, board_size_y = np.asarray(board).shape
+            promotion_value = 0
+            for pawn in pawn_positions_list:
+                if 1 == pawn[0]: # team colour is pawn[0]
+                    promotion_value += pawn[1][0] - (len(board)-1)
+                    yellow_team.append(pawn)
 
-        self.board_position_assigner(board_state)
-        pawn_positions_list = self.get_pawn_positions()
-
-        yellow_team = []
-        purple_team = []
-        board_size_x, board_size_y = np.asarray(board).shape
-        promotion_value = 0
-        for pawn in pawn_positions_list:
-            if 1 == pawn[0]: # team colour is pawn[0]
-                promotion_value += pawn[1][0] - (len(board)-1)
-                yellow_team.append(pawn)
-
-            elif -1 == pawn[0]:
-                promotion_value +=  pawn[1][0]
-                purple_team.append(pawn)
+                elif -1 == pawn[0]:
+                    promotion_value +=  pawn[1][0]
+                    purple_team.append(pawn)
+                else:
+                    raise Exception('pawn list has some values different from team values.')
+            pawn_number_difference_value = (len(yellow_team) - len(purple_team) + 1)* abs(len(yellow_team)-len(purple_team))
+            utility_value = promotion_value + pawn_number_difference_value
+            if turn == 1:
+               return (utility_value)
             else:
-                raise Exception('pawn list has some values different from team values.')
-
-        pawn_number_difference_value = (len(yellow_team) - len(purple_team) + 1)* abs(len(yellow_team)-len(purple_team))
-
-        utility_value = promotion_value + pawn_number_difference_value
-
-        if turn == 1:
-           return (utility_value)
-        else:
-            return (-utility_value)
+                return (-utility_value)
 
     def get_positions_from_action_tuple(self, positions):
         first_position = positions[0]
@@ -200,7 +200,7 @@ class Board(): # includes board rules and successor creator
         return first_position, second_position
 
 if __name__ == '__main__':
-        new_board = Board(default_team = -1)
+        new_board = Board(default_team = 1)
         new_board.random_board()
         successor_list = new_board.successor_generator()
         print('successors:', list(successor_list), len(successor_list))
@@ -212,7 +212,6 @@ if __name__ == '__main__':
             img = successor_list[i-1][1]
             fig.add_subplot(row, column, i)
             plt.imshow(img)
-
         plt.show()
         # z = x.random_move(y, 1)
         # x.move_executor(z)
