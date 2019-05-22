@@ -8,15 +8,13 @@ from timeit import default_timer as timer
 from functools import partial
 
 def start_position():
-    return (1, [[1, 1, 1, 1, 1],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [-1, -1, -1, -1, -1]])
+    return (1, [[1, 1, 1, 1],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [-1, -1, -1, -1]])
 def get_shape(board):
-    x, y = np.asarray(board).shape
-    print(x, y)
-    return x, y
+    n = np.asarray(board[1]).shape
+    return n
 
 def increase_score(state):  # increases winner's score as 2 for terminal position.
     global max_score, min_score
@@ -26,7 +24,6 @@ def increase_score(state):  # increases winner's score as 2 for terminal positio
     else:
         min_score += 1
     return max_score, min_score
-
 
 def game_manager():
     while True:  # determines players by user.
@@ -66,8 +63,8 @@ if __name__ == '__main__':
         max_score, min_score = 0, 0
         state = start_position()
         start = timer()
-        n = get_shape(state)
-        current_board = Board(n)
+        size_board = get_shape(state)
+        current_board = Board(n = size_board)
         move_counter, turn_switcher = (0, 0)  # move counter
         fig = plt.figure()
         while (True):  # maximum move limit

@@ -1,23 +1,39 @@
 import random
 from minimax import Minimax
 from PawnLogic import Board
+import numpy as np
 
 class Player:
-
     def ai_player(self, state, team = 1):  # creates first successors to implement minimax algorithm
-        player1 = Minimax(default_team = team)
+        new_shape_x = np.asarray(state[1]).shape
+        player1 = Minimax(n = new_shape_x, default_team = team)
+        if team == -1:
+            state = player1.convert_board_state(state)
         best_move = player1.decision_maker(state)
         chosen_succ, utility = best_move
-        return (chosen_succ)
+        if team == -1:
+            chosen_succ = player1.convert_board_state(chosen_succ)
+        return chosen_succ
+
+    def convert_move(self, move):
+        new_board_state = np.array([np.array(xi) * -1 for xi in move])
+        board = new_board_state
+        board = np.flipud(board)
+        board = board.tolist()
+        new_board_state = (board)
+        return new_board_state
+
 
     def random_player(self, state):  # choose random state from successors.
-        player2 = Board()
+        new_shape_x = np.asarray(state[1]).shape
+        player2 = Board(n=new_shape_x)
         succ_list = player2.successor_generator(state)
         random_move = random.randint(0, len(succ_list) - 1)
         return succ_list[random_move]
 
     def human_player(self, state):
-        player3 = Board()
+        new_shape_x = np.asarray(state[1]).shape
+        player3 = Board(n=new_shape_x)
         succ_list = player3.successor_generator(state)
         print('Current State is:', state)
         for x, elem in enumerate(succ_list):

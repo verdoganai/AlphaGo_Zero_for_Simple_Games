@@ -102,25 +102,25 @@ class unit_testing(unittest.TestCase):
                  'Yellow': 1}
 
         terminal_state_value = test_board.heuristic_value(reference_board_states0)
-        self.assertEqual(terminal_state_value, test_board.default_team*-100)
+        self.assertEqual(terminal_state_value, -100)
 
         terminal_state_value = test_board.heuristic_value(reference_board_states2)
-        self.assertEqual(terminal_state_value, test_board.default_team*-100)
+        self.assertEqual(terminal_state_value, -100)
 
         terminal_state_value = test_board.heuristic_value(reference_board_states4)
-        self.assertEqual(terminal_state_value, test_board.default_team*-100)
+        self.assertEqual(terminal_state_value, -100)
 
         print('Test Yellow Team done')
 
 
         terminal_state_value = test_board.heuristic_value((reference_board_states1))
-        self.assertEqual(terminal_state_value, test_board.default_team*100)
+        self.assertEqual(terminal_state_value, 100)
 
         terminal_state_value = test_board.heuristic_value(self.toggle(reference_board_states2))
-        self.assertEqual(terminal_state_value, test_board.default_team*100)
+        self.assertEqual(terminal_state_value, 100)
 
         terminal_state_value = test_board.heuristic_value(reference_board_states3)
-        self.assertEqual(terminal_state_value, test_board.default_team*100)
+        self.assertEqual(terminal_state_value, 100)
         print('Test Purple Team done')
 
         print('unit test succesful')

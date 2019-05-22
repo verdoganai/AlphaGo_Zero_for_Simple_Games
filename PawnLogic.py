@@ -23,7 +23,7 @@ Date: March 6, 2019.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n=(5,5), default_team = None, turn = None):
+    def __init__(self, n = None, default_team = None, turn = None): # visualise all the successors if you choose none
         self.n = n
         self.x = n[0]
         self.y = n[1]
@@ -36,20 +36,19 @@ class Board(): # includes board rules and successor creator
         self.pieces[0]=[1] * self.y # First team default position
         self.pieces[-1]=[-1] * self.y #second team default position
         print('default_team', self.default_team)
-
     def __getitem__(self, index):
         return self.pieces[index]
 
     def create_random_index(self, team_color):  # add [][] indexer syntax to the Board
-        x = random.randint(1, self.n - 2)
-        y = random.randint(0, self.n - 1)
+        x = random.randint(1, self.x - 2)
+        y = random.randint(0, self.y - 1)
         self.pieces[x][y] = team_color
 
     def random_board(self): # random board state creater without 'turn'
-        for i in range(self.n):
-            self.pieces[i] = [0] * self.n
+        for i in range(self.x):
+            self.pieces[i] = [0]*self.y
 
-        random_piece_number = 6 # create maksimum 12 pieces. Max 6 for each team.
+        random_piece_number = self.x # create maksimum 12 pieces. Max 6 for each team.
         for i in range(random_piece_number):
             self.create_random_index(1)
             self.create_random_index(-1)
@@ -75,6 +74,15 @@ class Board(): # includes board rules and successor creator
             if active_pawn[1] == pawn[1] :
                 return False
         return True
+
+    def convert_board_state(self, board_state):
+        assert self.default_team == -1, "Vural we've got a problem"
+        new_board_state = np.array([np.array(xi) * -1 for xi in board_state])
+        turn, board = new_board_state
+        board = np.flipud(board)
+        board = [list(x) for x in board]
+        new_board_state = (turn, board)
+        return new_board_state
 
     def get_board_coppy(self): # help to copy the initial board position.
         coppy_board = copy.deepcopy(self.pieces)
@@ -159,17 +167,16 @@ class Board(): # includes board rules and successor creator
         else:
             return False
 
-
     def heuristic_value(self, board_state, depth = None):
         assert self.terminal_state(board_state, depth)# manhattan distance has been used for heuristic.
         turn, board = board_state
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
-            return -100*self.default_team  # turn will be always "1"
+            return -100  # turn will be always "1"
         if 1 in board[-1]:
-            return 100*self.default_team  # turn will be alway "-1"
+            return 100  # turn will be alway "-1"
         created_moves = self.successor_generator(board_state)
         if not created_moves:  # no moves due to no pawn or pawn stacks
-            return (-100)*turn*self.default_team
+            return (-100)*turn
         if depth:
             self.board_position_assigner(board_state)
             pawn_positions_list = self.get_pawn_positions()
@@ -181,7 +188,6 @@ class Board(): # includes board rules and successor creator
                 if 1 == pawn[0]: # team colour is pawn[0]
                     promotion_value += pawn[1][0] - (len(board)-1)
                     yellow_team.append(pawn)
-
                 elif -1 == pawn[0]:
                     promotion_value +=  pawn[1][0]
                     purple_team.append(pawn)
@@ -200,7 +206,7 @@ class Board(): # includes board rules and successor creator
         return first_position, second_position
 
 if __name__ == '__main__':
-        new_board = Board(default_team = 1)
+        new_board = Board(default_team = 1, turn = 1, n=(5,5))
         new_board.random_board()
         successor_list = new_board.successor_generator()
         print('successors:', list(successor_list), len(successor_list))
