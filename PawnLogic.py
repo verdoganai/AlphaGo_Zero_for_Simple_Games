@@ -46,7 +46,7 @@ class Board(): # includes board rules and successor creator
 
     def random_board(self): # random board state creater without 'turn'
         for i in range(self.x):
-            self.pieces[i] = [0]*self.y
+            self.pieces[i]=[0]*self.y
 
         random_piece_number = self.x # create maksimum 12 pieces. Max 6 for each team.
         for i in range(random_piece_number):
@@ -155,7 +155,7 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-    def terminal_state(self, board_state, depth=None): # winning positions
+    def terminal_state(self, board_state, depth): # winning positions
         if depth == 0:
             return True
         turn, board = board_state
@@ -167,7 +167,8 @@ class Board(): # includes board rules and successor creator
         else:
             return False
 
-    def heuristic_value(self, board_state, depth = None):
+    def heuristic_value(self, board_state, depth):
+
         assert self.terminal_state(board_state, depth)# manhattan distance has been used for heuristic.
         turn, board = board_state
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
@@ -177,7 +178,7 @@ class Board(): # includes board rules and successor creator
         created_moves = self.successor_generator(board_state)
         if not created_moves:  # no moves due to no pawn or pawn stacks
             return (-100)*turn
-        if depth:
+        if depth is not None:
             self.board_position_assigner(board_state)
             pawn_positions_list = self.get_pawn_positions()
             yellow_team = []
@@ -193,12 +194,29 @@ class Board(): # includes board rules and successor creator
                     purple_team.append(pawn)
                 else:
                     raise Exception('pawn list has some values different from team values.')
+
             pawn_number_difference_value = (len(yellow_team) - len(purple_team) + 1)* abs(len(yellow_team)-len(purple_team))
-            utility_value = promotion_value + pawn_number_difference_value
-            if turn == 1:
-               return (utility_value)
-            else:
-                return (-utility_value)
+
+            cols = [None] * len(board)
+            distance_score = 0
+            for row in board:
+                for j, col in enumerate(row):
+                    if cols[j] is None:
+                        if col == turn:
+                            cols[j] = 0
+                    elif col == -turn:
+                        distance_score += cols[j]
+                    else:
+                        cols[j] += 1
+
+            distance_score = ((-1)**(distance_score+1))*distance_score
+
+            utility_value = promotion_value + 4*pawn_number_difference_value + distance_score
+            print(utility_value)
+
+            return (utility_value)*turn
+
+
 
     def get_positions_from_action_tuple(self, positions):
         first_position = positions[0]

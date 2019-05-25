@@ -4,25 +4,17 @@ from PawnLogic import Board
 import numpy as np
 
 class Player:
-    def ai_player(self, state, team = 1):  # creates first successors to implement minimax algorithm
+
+    def ai_player(self, state, depth=7, team = 1):  # creates first successors to implement minimax algorithm
         new_shape_x = np.asarray(state[1]).shape
         player1 = Minimax(n = new_shape_x, default_team = team)
         if team == -1:
             state = player1.convert_board_state(state)
-        best_move = player1.decision_maker(state)
+        best_move = player1.decision_maker(state, depth)
         chosen_succ, utility = best_move
         if team == -1:
             chosen_succ = player1.convert_board_state(chosen_succ)
         return chosen_succ
-
-    def convert_move(self, move):
-        new_board_state = np.array([np.array(xi) * -1 for xi in move])
-        board = new_board_state
-        board = np.flipud(board)
-        board = board.tolist()
-        new_board_state = (board)
-        return new_board_state
-
 
     def random_player(self, state):  # choose random state from successors.
         new_shape_x = np.asarray(state[1]).shape

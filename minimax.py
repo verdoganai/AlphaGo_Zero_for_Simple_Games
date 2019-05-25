@@ -3,8 +3,7 @@ from unit_test import *
 import numpy as np
 
 class Minimax(Board):
-    # def __init__(self, default_team):
-    #     super(Minimax, self).__init__(default_team=default_team)
+
     def minimax(self, board_state, a, b, depth = None):
         turn, board = board_state
         if super().terminal_state(board_state, depth):
@@ -13,7 +12,7 @@ class Minimax(Board):
             if turn == -1:
                 value = 250
                 for x in super().successor_generator(board_state):
-                    if depth:
+                    if depth is not None:
                         value = min(value, self.minimax(x, a, b, depth - 1))
                     else:
                         value = min(value, self.minimax(x, a, b))
@@ -23,11 +22,10 @@ class Minimax(Board):
             elif turn == 1:
                 value = -250
                 for x in super().successor_generator(board_state):
-                    if depth:
+                    if depth is not None:
                         value = max(value, self.minimax(x, a, b, depth - 1))
                     else:
                         value = max(value, self.minimax(x, a, b))
-
                     a = max(a, value)
                     if b <= a:
                         break
@@ -48,8 +46,8 @@ class Minimax(Board):
 
 
 if __name__ == '__main__':
-    unit_testing().test_moves()
-    unit_testing().winning_positions()
+    # unit_testing().test_moves()
+    # unit_testing().winning_positions()
     initial_state = (-1, [[0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 1, -1, 0],
                          [0, 1, 1, 0, 0, 0],
@@ -71,4 +69,4 @@ if __name__ == '__main__':
 
     new_shape_x = np.asarray(initial_state3[1]).shape
     new_board = Minimax(n = new_shape_x, default_team=1)
-    new_board.decision_maker(initial_state3)
+    new_board.decision_maker(initial_state3, depth = 3) # depth is optional
