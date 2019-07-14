@@ -3,8 +3,6 @@ from PawnLogic import Board
 import numpy as np
 
 class unit_testing(unittest.TestCase):
-
-
     def test_moves(self):
 
 
@@ -59,8 +57,6 @@ class unit_testing(unittest.TestCase):
 
     def winning_positions(self):
 
-
-
         reference_board_states0 = (1, [[0, 0, 0, 0, -1, 0],
                                        [0, 0, 0, 0, 0, 0],
                                        [0, 0, 0, 0, 0, 0],
@@ -97,7 +93,7 @@ class unit_testing(unittest.TestCase):
                                        [0, 0, 0, 0, 0, 0]])
 
         board_size = np.asarray(reference_board_states0[1]).shape
-        test_board = Board(n=board_size, default_team = -1)
+        test_board = Board(n=board_size, default_team = 1)
         teams = {'Purple': -1,
                  'Yellow': 1}
 
@@ -124,7 +120,5 @@ class unit_testing(unittest.TestCase):
         print('Test Purple Team done')
 
         print('unit test succesful')
-
-
 
 

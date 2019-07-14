@@ -155,7 +155,7 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-    def terminal_state(self, board_state, depth): # winning positions
+    def terminal_state(self, board_state, *depth): # winning positions
         if depth == 0:
             return True
         turn, board = board_state
@@ -167,9 +167,9 @@ class Board(): # includes board rules and successor creator
         else:
             return False
 
-    def heuristic_value(self, board_state, depth):
+    def heuristic_value(self, board_state, *depth):
 
-        assert self.terminal_state(board_state, depth)# manhattan distance has been used for heuristic.
+        assert self.terminal_state(board_state, *depth)# manhattan distance has been used for heuristic.
         turn, board = board_state
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
             return -100  # turn will be always "1"
@@ -211,8 +211,7 @@ class Board(): # includes board rules and successor creator
 
             distance_score = ((-1)**(distance_score+1))*distance_score
 
-            utility_value = promotion_value + 4*pawn_number_difference_value + distance_score
-            print(utility_value)
+            utility_value = promotion_value + 2*pawn_number_difference_value + distance_score
 
             return (utility_value)*turn
 

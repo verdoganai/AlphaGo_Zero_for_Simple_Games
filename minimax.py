@@ -46,8 +46,8 @@ class Minimax(Board):
 
 
 if __name__ == '__main__':
-    # unit_testing().test_moves()
-    # unit_testing().winning_positions()
+    unit_testing().test_moves()
+    unit_testing().winning_positions()
     initial_state = (-1, [[0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 1, -1, 0],
                          [0, 1, 1, 0, 0, 0],
