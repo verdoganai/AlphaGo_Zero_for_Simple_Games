@@ -35,7 +35,8 @@ class Board(): # includes board rules and successor creator
             self.pieces[i] = [0] * self.y
         self.pieces[0]=[1] * self.y # First team default position
         self.pieces[-1]=[-1] * self.y #second team default position
-        print('default_team', self.default_team)
+
+
     def __getitem__(self, index):
         return self.pieces[index]
 
@@ -58,10 +59,11 @@ class Board(): # includes board rules and successor creator
 
     def get_pawn_positions(self): # help to get pawn positions with the team colour '-1' or '1'
         pawn_position_list = set()
+
         for y in range(self.y):
             for x in range(self.x):
-                if not self[x][y] == 0:
-                    pawn_position_list.add((self[x][y],(x, y)))
+                if not self.pieces[x][y] == 0:
+                    pawn_position_list.add((self.pieces[x][y],(x, y)))
         return list(pawn_position_list)
 
     def get_cordinates(self, active_pawn): # Active Pawn represents next possible state of a pawn.
@@ -76,9 +78,11 @@ class Board(): # includes board rules and successor creator
         return True
 
     def convert_board_state(self, board_state):
+        turn, state = board_state
+        print(board_state)
         assert self.default_team == -1, "Vural we've got a problem"
-        new_board_state = np.array([np.array(xi) * -1 for xi in board_state])
-        turn, board = new_board_state
+        new_board_state = np.array([np.array(xi) * -1 for xi in state])
+        turn, board = -turn, new_board_state
         board = np.flipud(board)
         board = [list(x) for x in board]
         new_board_state = (turn, board)
@@ -93,6 +97,8 @@ class Board(): # includes board rules and successor creator
         position_1_cord_x, position_1_cord_y = self.get_cordinates(position1)
         position_2_cord_x, position_2_cord_y = self.get_cordinates(position2)
         new_board = self.get_board_coppy()
+        if isinstance(new_board[1], tuple):
+            new_board = [list(x) for x in new_board]
         new_board[position_1_cord_x][position_1_cord_y] = 0 # delete old position
         new_board[position_2_cord_x][position_2_cord_y] = position2[0]
         return new_board
@@ -155,10 +161,22 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
+    def find_winner(self, board_state):
+        if self.terminal_state(board_state):
+            value = self.heuristic_value(board_state)
+            print(value)
+            return True if value > 0 else False
+        else:
+            return None
+
+    def hash_converter(self, board_state):
+        nested_lst_of_tuples = [tuple(l) for l in board_state]
+        return tuple(nested_lst_of_tuples)
+
     def terminal_state(self, board_state, *depth): # winning positions
         if depth == 0:
             return True
-        turn, board = board_state
+        turn, board = board_state[0], board_state[1]
         if -1 in board[0] or 1 in board[-1]:   # check the last rows if there is pawn or not. We are yellow as default.
             return True     #turn will be always "1"
         created_moves = self.successor_generator(board_state)
@@ -169,8 +187,8 @@ class Board(): # includes board rules and successor creator
 
     def heuristic_value(self, board_state, *depth):
 
-        assert self.terminal_state(board_state, *depth)# manhattan distance has been used for heuristic.
-        turn, board = board_state
+        assert self.terminal_state(board_state, *depth) # manhattan distance has been used for heuristic.
+        turn, board = board_state[0], board_state[1]
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
             return -100  # turn will be always "1"
         if 1 in board[-1]:
@@ -214,7 +232,6 @@ class Board(): # includes board rules and successor creator
             utility_value = promotion_value + 2*pawn_number_difference_value + distance_score
 
             return (utility_value)*turn
-
 
 
     def get_positions_from_action_tuple(self, positions):

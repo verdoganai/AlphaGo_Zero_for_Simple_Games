@@ -64,7 +64,7 @@ if __name__ == '__main__':
     chosen_players, players_names = game_manager()
     for x in range(200):
         max_score, min_score = 0, 0
-        state = start_position(1, 5,5)
+        state = start_position(1, 3, 3)
         start = timer()
         size_board = get_shape(state)
         current_board = Board(n = size_board)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             plt.imshow(state[1])
             plt.pause(0.5)
             print('%d:' % (turn_switcher + 1) + players_names[turn_switcher] + " player's move:")
-            if current_board.terminal_state(state, depth=None):  # checking whether terminal state or not
+            if current_board.terminal_state(state):  # checking whether terminal state or not
                 max_score, min_score = increase_score(state)
                 print(max_score, min_score)
                 plt.pause(2)

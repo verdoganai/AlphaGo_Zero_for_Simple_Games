@@ -5,7 +5,7 @@ import numpy as np
 
 class Player:
 
-    def ai_player(self, state, depth=7, team = 1):  # creates first successors to implement minimax algorithm
+    def ai_player(self, state, depth=2, team = 1):  # creates first successors to implement minimax algorithm
         new_shape_x = np.asarray(state[1]).shape
         player1 = Minimax(n = new_shape_x, default_team = team)
         if team == -1:

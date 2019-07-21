@@ -3,19 +3,18 @@ A minimal implementation of Monte Carlo tree search (MCTS) in Python 3.
 Luke Harold Miles, November 2018, Public Domain Dedication
 See also https://en.wikipedia.org/wiki/Monte_Carlo_tree_search
 """
-import random
 
+from abc import ABC, abstractmethod
 from collections import defaultdict
 import math
 from PawnLogic import Board
-import numpy as np
-from unit_test import *
 
-class MCTS():
+
+class MCTS:
     "Monte Carlo tree search"
     def __init__(self, exploration_weight=1):
 #       super(MCTS, self).__init__(n, default_team)
-        self.Q = defaultdict(int)  # total reward of each node
+        self.Q = defaultdict(int)  # total score of each node
         self.N = defaultdict(int)  # total visit count for each node
         self.children = dict()  # children of each node
         self.exploration_weight = exploration_weight
@@ -24,11 +23,13 @@ class MCTS():
         "Choose the best successor of node"
         if node not in self.children:
             return node.find_random_child()
-
+        print(self.children)
+        print('list', self.children[node])
         def score(n):
             if self.N[n] == 0:
                 return float('-inf')
-            return self.Q[n] / self.N[n]  # average reward
+            print('asdf', self.Q[n]/self.N[n])
+            return self.Q[n] / self.N[n]  # average score
 
         return max(self.children[node], key=score)
 
@@ -38,6 +39,7 @@ class MCTS():
         leaf = path[-1]
         self.expand(leaf)
         reward = self.simulate(leaf)
+        print(reward)
         self.backpropagate(path, reward)
 
     def select(self, node):
@@ -73,6 +75,7 @@ class MCTS():
         "Send the reward back up to the ancestors of the leaf"
         for node in path:
             reward = 1 - reward  # 1 for me is 0 for my enemy, and vice versa
+
             self.N[node] += 1
             self.Q[node] += reward
 
@@ -92,65 +95,43 @@ class MCTS():
         return max(self.children[node], key=uct)
 
 
-class Node (Board):
+class Node(ABC):
 
-    def __init__(self, board_state, n, default_team):
-        self.board_state = board_state
-        super(Node, self).__init__(n, default_team)
-
-
-    "This can be a checkers or chess or tic-tac-to board state"
-
+    @abstractmethod
     def find_children(self):
-        successor_list =  super().successor_generator(self.board_state)
-        "All possible successors to this board state"
-        return successor_list
+        "All possible successors of this board state"
+        return set()
 
+    @abstractmethod
     def find_random_child(self):
-        succ_list = super().successor_generator(self.board_state)
-        if succ_list:
-            random_move = random.randint(0, len(succ_list) - 1)
-            return succ_list[random_move]
-        else: return None
+        "Random successor of this board state (for more efficient simulation)"
+        return None
 
+    @abstractmethod
+    def is_terminal(self):
+        "Returns True if the node has no children"
+        return True
+
+
+    @abstractmethod
     def reward(self):
-         if super().terminal_state(self.board_state):
-            return super().heuristic_value(self.board_state)
-         else:
-             raise "Error"
+        "Assumes `self` is terminal node. 1=win, 0=loss, .5=tie, etc"
+        return 0
 
-  #      "Assumes `self` is terminal node. 1=win, 0=loss, .5=tie, etc"
-    #
-    # def __init__(self):
-    #     "Make a new node"
-    #     pass
+    @abstractmethod
+    def hast_converter(self):
+        return tuple()
 
+
+    @abstractmethod
     def __hash__(self):
         "Nodes must be hashable"
-        return 37
+        return 123456789
 
+    @abstractmethod
     def __eq__(node1, node2):
         "Nodes must be comparable"
         return True
 
 
 
-if  __name__== "__main__":
-    initial_state = (-1, [[0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 0, 0],
-                          [0, 1, 1, 0, 0, 0],
-                          [1, -1, 0, 0, -1, -1],
-                          [0, 0, 0, 1, 0, 0],
-                          [0, 0, 0, 0, 0, 0]])
-    terminal_state = (1, [[0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 0, 0],
-                          [0, 0, 0, 0, 0, 0],
-                          [0, -1, 0, 0, -1, -1],
-                          [0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0]])
-    print('f')
-    new_shape_x = np.asarray(initial_state[1]).shape
-
-    state_of = Node(terminal_state, n = new_shape_x, default_team=1)
-    new_move = state_of.find_children()
-    print(new_move)
