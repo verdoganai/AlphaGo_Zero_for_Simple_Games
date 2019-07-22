@@ -28,9 +28,8 @@ class MCTS:
         def score(n):
             if self.N[n] == 0:
                 return float('-inf')
-            print('asdf', self.Q[n]/self.N[n])
+            print('self.Q[n]/self.N[n]', self.Q[n]/self.N[n])
             return self.Q[n] / self.N[n]  # average score
-
         return max(self.children[node], key=score)
 
     def do_rollout(self, node):
@@ -39,7 +38,6 @@ class MCTS:
         leaf = path[-1]
         self.expand(leaf)
         reward = self.simulate(leaf)
-        print(reward)
         self.backpropagate(path, reward)
 
     def select(self, node):

@@ -11,24 +11,20 @@ from MCTS import MCTS, Node
 _PBS = namedtuple("PawnBoardState", "turnx state winner terminal")
 
 class PawnBoardState(_PBS, Board):
-    def __init__(self, turnx=None, state=None, winner=None, terminal = None,
-                    n = None, default_team = None, turn=None):
-        super(PawnBoardState, self).__init__(n = (6,6), default_team = None, turn = None)
+    def __init__(self, turnx=None, state=None, winner=None, terminal = None):
+        super(PawnBoardState, self).__init__()
 
 
     def find_children(board_state):
         if board_state.terminal:
-            print('end')
             return set()
-
-        "All possible successors to this board state"
+        print('successors:', {board_state.make_move(i) for i in range(len(super().successor_generator(board_state)))})
         return {
-            board_state.make_move(i) for i, value in enumerate(board_state.state) if value is None
+            board_state.make_move(i) for i in range(len(super().successor_generator(board_state)))
         }
 
     def find_random_child(board_state):
         if board_state.terminal:
-            print('end2')
             return None
 
         succ_list = super().successor_generator(board_state)
@@ -55,9 +51,7 @@ class PawnBoardState(_PBS, Board):
         selected_board = state_list[index]
         turnx, state = selected_board
         winner = super().find_winner(selected_board)
-        print(selected_board)
         is_terminal = super().terminal_state(selected_board)
-        print(is_terminal)
         state = super().hash_converter(state)
         return PawnBoardState(turnx, state, winner, is_terminal)
 
@@ -90,15 +84,14 @@ if __name__ == "__main__":
     size_board = get_shape(initial_state)
     new_state = new_pawn_board(initial_state)
     while True:
-        choose_index = input('choose_index:')
-        new_state = new_state.make_move(int(choose_index))
+        choose_index = int(input('choose_index:'))
+        new_state = new_state.make_move(choose_index)
         if new_state.terminal:
             break
         print('new_state', new_state)
         for _ in range(50):
-            print('x')
             tree.do_rollout(new_state)
-            new_state = tree.choose(new_state)
+        new_state = tree.choose(new_state)
 
         print(new_state)
         if new_state.terminal:

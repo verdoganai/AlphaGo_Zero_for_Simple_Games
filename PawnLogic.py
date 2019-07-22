@@ -23,7 +23,7 @@ Date: March 6, 2019.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n = None, default_team = None, turn = None): # visualise all the successors if you choose none
+    def __init__(self, n = (6,6), default_team = None, turn = None): # visualise all the successors if you choose none
         self.n = n
         self.x = n[0]
         self.y = n[1]
@@ -164,7 +164,6 @@ class Board(): # includes board rules and successor creator
     def find_winner(self, board_state):
         if self.terminal_state(board_state):
             value = self.heuristic_value(board_state)
-            print(value)
             return True if value > 0 else False
         else:
             return None
