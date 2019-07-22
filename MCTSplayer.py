@@ -89,9 +89,7 @@ if __name__ == "__main__":
         if new_state.terminal:
             break
         print('new_state', new_state)
-        for _ in range(50):
-            tree.do_rollout(new_state)
-        new_state = tree.choose(new_state)
+
 
         print(new_state)
         if new_state.terminal:
