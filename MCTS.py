@@ -23,8 +23,8 @@ class MCTS:
         "Choose the best successor of node"
         if node not in self.children:
             return node.find_random_child()
-        print(self.children)
-        print('list', self.children[node])
+        print('choose function', self.children)
+        print('choose_list', self.children[node])
         def score(n):
             if self.N[n] == 0:
                 return float('-inf')
@@ -33,6 +33,7 @@ class MCTS:
         return max(self.children[node], key=score)
 
     def do_rollout(self, node):
+        print(self.children)
         "Make the tree one layer better"
         path = self.select(node)
         leaf = path[-1]
@@ -93,43 +94,43 @@ class MCTS:
         return max(self.children[node], key=uct)
 
 
-class Node(ABC):
-
-    @abstractmethod
-    def find_children(self):
-        "All possible successors of this board state"
-        return set()
-
-    @abstractmethod
-    def find_random_child(self):
-        "Random successor of this board state (for more efficient simulation)"
-        return None
-
-    @abstractmethod
-    def is_terminal(self):
-        "Returns True if the node has no children"
-        return True
-
-
-    @abstractmethod
-    def reward(self):
-        "Assumes `self` is terminal node. 1=win, 0=loss, .5=tie, etc"
-        return 0
-
-    @abstractmethod
-    def hast_converter(self):
-        return tuple()
-
-
-    @abstractmethod
-    def __hash__(self):
-        "Nodes must be hashable"
-        return 123456789
-
-    @abstractmethod
-    def __eq__(node1, node2):
-        "Nodes must be comparable"
-        return True
-
-
-
+# class Node(ABC):
+#
+#     @abstractmethod
+#     def find_children(self):
+#         "All possible successors of this board state"
+#         return set()
+#
+#     @abstractmethod
+#     def find_random_child(self):
+#         "Random successor of this board state (for more efficient simulation)"
+#         return None
+#
+#     @abstractmethod
+#     def is_terminal(self):
+#         "Returns True if the node has no children"
+#         return True
+#
+#
+#     @abstractmethod
+#     def reward(self):
+#         "Assumes `self` is terminal node. 1=win, 0=loss, .5=tie, etc"
+#         return 0
+#
+#     @abstractmethod
+#     def hast_converter(self):
+#         return tuple()
+#
+#
+#     @abstractmethod
+#     def __hash__(self):
+#         "Nodes must be hashable"
+#         return 123456789
+#
+#     @abstractmethod
+#     def __eq__(node1, node2):
+#         "Nodes must be comparable"
+#         return True
+#
+#
+#

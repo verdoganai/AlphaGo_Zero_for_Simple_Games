@@ -128,7 +128,6 @@ class Board(): # includes board rules and successor creator
     def successor_generator(self, *input_state):
         for state in input_state:    # this input state is optional to start from any board state.
             self.board_position_assigner(state)
-
         legal_moves=[]
         all_pawn_positions = self.get_pawn_positions()
         #First move creator (forward)
@@ -161,6 +160,8 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
+
+
     def find_winner(self, board_state):
         if self.terminal_state(board_state):
             value = self.heuristic_value(board_state)
@@ -185,7 +186,6 @@ class Board(): # includes board rules and successor creator
             return False
 
     def heuristic_value(self, board_state, *depth):
-
         assert self.terminal_state(board_state, *depth) # manhattan distance has been used for heuristic.
         turn, board = board_state[0], board_state[1]
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
