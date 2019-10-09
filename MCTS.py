@@ -23,7 +23,6 @@ class MCTS:
         "Choose the best successor of node"
         if node not in self.children:
             return node.find_random_child()
-        print('choose function', self.children)
         print('choose_list', self.children[node])
         def score(n):
             if self.N[n] == 0:
@@ -33,7 +32,6 @@ class MCTS:
         return max(self.children[node], key=score)
 
     def do_rollout(self, node):
-        print(self.children)
         "Make the tree one layer better"
         path = self.select(node)
         leaf = path[-1]

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 _PBS = namedtuple("PawnBoardState", "turnx state winner terminal")
 
-class PawnBoardState(_PBS, Board): #Board should be abstract class but in our case it is superclass
+class PawnBoardState(_PBS, Board):
     def __init__(self, turnx=None, state=None, winner=None, terminal = None):
         super(PawnBoardState, self).__init__()
 
@@ -38,10 +38,12 @@ class PawnBoardState(_PBS, Board): #Board should be abstract class but in our ca
         return board_state.terminal
 
     def reward(board_state):
-        value = super().find_winner(board_state) # find_winner finds winner considering heuristic.
+        # find_winner finds winner considering heuristic.
         #  As we don't have depth-cut, heuristic function will be assigned as 100 or -100
         # that will be polorised as True (1) and False(0).
         # if it is not terminal state and returns that means it is a draw but in our game there is no draw.
+
+        value = super().find_winner(board_state)
         if value == True: return 1
         elif value == False: return 0
         elif value is None: return 0.5
@@ -60,7 +62,8 @@ class PawnBoardState(_PBS, Board): #Board should be abstract class but in our ca
 
 def new_pawn_board(board_state, winner=None, terminal = False):
     turnx, state = board_state
-    return PawnBoardState(turnx, state, winner, terminal)
+    state = [tuple(l) for l in state]
+    return PawnBoardState(turnx, tuple(state), winner, terminal)
 
 
 def get_shape(board):
@@ -85,21 +88,22 @@ if __name__ == "__main__":
     size_board = get_shape(initial_state)
     new_state = new_pawn_board(initial_state)
     fig = plt.figure()
-    while True:
-        choosen_index = int(input('choose_index:'))
-        new_state = new_state.make_move(choosen_index)
-        if new_state.terminal:
-            break
-        print('new_state', new_state)
-        print(new_state)
+    while True: # MCTS vs MCTS
         plt.imshow(new_state[1])
         plt.pause(2)
-        plt.close()
+        print(new_state)
+        for _ in range(100):
+            tree.do_rollout(new_state)
+        new_state = tree.choose(new_state)
+        if new_state.terminal:
+            break
+        print('new_state after move', new_state)
+        plt.imshow(new_state[1])
+        plt.pause(2)
         for _ in range(100):
             tree.do_rollout(new_state)
         new_state = tree.choose(new_state)
         plt.imshow(new_state[1])
-        plt.pause(3)
-        plt.close()
+        plt.pause(2)
         if new_state.terminal:
             break
