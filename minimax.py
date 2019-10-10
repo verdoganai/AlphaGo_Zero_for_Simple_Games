@@ -32,7 +32,7 @@ class Minimax(Board):
         result = board_state, value
         return value
 
-    def decision_maker(self, board_state, depth = None):
+    def decision_maker(self, board_state, depth = 4):
         compare = {1: max, -1: min}
         a, b = -250, 250
         last_generation = super().successor_generator(board_state)
@@ -40,7 +40,6 @@ class Minimax(Board):
         combined = list(zip(last_generation, last_generation_utilies))
         best_selector = compare[board_state[0]]
         result = best_selector(combined, key=lambda item: item[1])
-        print(result)
         return (result)
 
 
@@ -61,12 +60,18 @@ if __name__ == '__main__':
                           [1, -1, 0, 0, -1, -1],
                           [ 0, 0, 1, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0]])
+    initial_state4 = (1, [[1, 1, 1, 1, 1, 1],
+                          [0, 0, 0, 0, 0, 0],
+                          [0, 0, 0, 0, 0, 0],
+                          [0, 0, 0, 0, 0, 0],
+                          [0, 0, 0, 0, 0, 0],
+                          [-1, -1, -1, -1, -1, -1]])
 
     initial_state3 =  (1, [[1, 1, 0, 1],
                             [0, 0, 0, 0],
                             [0, 0, 0, 0],
                             [0, -1, -1, -1]])
 
-    new_shape_x = np.asarray(initial_state3[1]).shape
+    new_shape_x = np.asarray(initial_state4[1]).shape
     new_board = Minimax(n = new_shape_x, default_team=1)
-    new_board.decision_maker(initial_state3, depth = 3) # depth is optional
+    new_board.decision_maker(initial_state4) # depth is optional

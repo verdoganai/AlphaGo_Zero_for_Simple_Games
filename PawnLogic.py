@@ -23,8 +23,7 @@ Date: March 6, 2019.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n = (6,6), default_team = None, turn = None): # visualise all the successors if you choose none
-        self.n = n
+    def __init__(self, n = (8, 8), default_team = None, turn = None): # visualise all the successors if you choose none
         self.x = n[0]
         self.y = n[1]
         self.default_team = default_team
@@ -59,7 +58,6 @@ class Board(): # includes board rules and successor creator
 
     def get_pawn_positions(self): # help to get pawn positions with the team colour '-1' or '1'
         pawn_position_list = set()
-
         for y in range(self.y):
             for x in range(self.x):
                 if not self.pieces[x][y] == 0:
@@ -79,7 +77,6 @@ class Board(): # includes board rules and successor creator
 
     def convert_board_state(self, board_state):
         turn, state = board_state
-        print(board_state)
         assert self.default_team == -1, "Vural we've got a problem"
         new_board_state = np.array([np.array(xi) * -1 for xi in state])
         turn, board = -turn, new_board_state
@@ -130,9 +127,10 @@ class Board(): # includes board rules and successor creator
             self.board_position_assigner(state)
         legal_moves=[]
         all_pawn_positions = self.get_pawn_positions()
+
         #First move creator (forward)
         for active_pawn in all_pawn_positions:
-            target_location = (active_pawn[0], ((active_pawn[1][0]+active_pawn[0]),)+ active_pawn[1][1:])
+            target_location = (active_pawn[0], ((active_pawn[1][0]+active_pawn[0]),) + active_pawn[1][1:])
             try:
                 assert self.check_empty(target_location)
                 # legal_moves.append((x, move1))
@@ -160,8 +158,6 @@ class Board(): # includes board rules and successor creator
         random_move = random.randint(0, len(list_moves) - 1)
         return list_moves[random_move]
 
-
-
     def find_winner(self, board_state):
         if self.terminal_state(board_state):
             value = self.heuristic_value(board_state)
@@ -173,7 +169,7 @@ class Board(): # includes board rules and successor creator
         nested_lst_of_tuples = [tuple(l) for l in board_state]
         return tuple(nested_lst_of_tuples)
 
-    def terminal_state(self, board_state, *depth): # winning positions
+    def terminal_state(self, board_state, depth=None): # winning positions
         if depth == 0:
             return True
         turn, board = board_state[0], board_state[1]
@@ -185,8 +181,8 @@ class Board(): # includes board rules and successor creator
         else:
             return False
 
-    def heuristic_value(self, board_state, *depth):
-        assert self.terminal_state(board_state, *depth) # manhattan distance has been used for heuristic.
+    def heuristic_value(self, board_state, depth=None):
+        assert self.terminal_state(board_state, depth) # manhattan distance has been used for heuristic.
         turn, board = board_state[0], board_state[1]
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
             return -100  # turn will be always "1"

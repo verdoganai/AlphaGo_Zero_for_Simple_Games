@@ -32,19 +32,22 @@ def increase_score(state):  # increases winner's score as 2 for terminal positio
 
 def game_manager():
     while True:  # determines players by user.
-        player_1 = int(input('Determine first player; Random(0), AI(1), Human(2) :'))
-        player_2 = int(input('Determine second player; Random(0), AI(1), Human(2): '))
-        if player_1 in range(0, 3) and player_2 in range(0, 3):  # checking inputs
+        player_1 = int(input('Determine first player; Random(0), Minimax(1), Human(2), MCTS(3) :'))
+        player_2 = int(input('Determine second player; Random(0), Minimax(1), Human(2):, MCTS(3) :'))
+        if player_1 in range(0, 4) and player_2 in range(0, 4):  # checking inputs
             break
         else:
             print('Out of range. Please choose a player')
     game = Player()
-    players = [game.random_player, game.ai_player, game.human_player]
+    players = [game.random_player, game.minimax_player, game.human_player, game.mcts_player]
     chosen_players = [players[player_1], players[player_2]]  # collecting chosen players to create a turn switcher.
     first_player, _ = chosen_players[0].__name__.split('_')
-    if chosen_players[1] == game.ai_player:
-        chosen_players[1] = partial(game.ai_player, team=-1)
-        chosen_players[1].__name__ = "ai_player"
+    if chosen_players[1] == game.minimax_player:
+        chosen_players[1] = partial(game.minimax_player, team=-1)
+        chosen_players[1].__name__ = "minimax_player"
+    if chosen_players[1] == game.mcts_player:
+        chosen_players[1] = partial(game.mcts_player, team=-1)
+        chosen_players[1].__name__ = "mcts_player"
     second_player, _ = chosen_players[1].__name__.split('_')
     players_names = [first_player, second_player]  # collecting chosen players' names to illustrate whose turn.
     print(first_player + " vs " + second_player + " have been chosen.")
@@ -53,18 +56,18 @@ def game_manager():
 
 def export_data(duration, max_score, min_score):
     print('Score: {0} {1} duration: {2} second'.format(max_score, min_score, time_result))
-    initial_state = start_position(1, 5, 5)  # we coppied starting position to export heap value.
+    initial_state = start_position(1, 6, 6)  # we coppied starting position to export heap value.
     with open('Pawn Analysing.txt', 'a') as f:  # export results
         print(duration, max_score, min_score, initial_state[1], file=f)
 
 
 if __name__ == '__main__':
     unit_testing().test_moves()
-  #  unit_testing().winning_positions()
+    unit_testing().winning_positions()
     chosen_players, players_names = game_manager()
     for x in range(200):
         max_score, min_score = 0, 0
-        state = start_position(1, 4, 4)
+        state = start_position(1, 8, 8)
         start = timer()
         size_board = get_shape(state)
         current_board = Board(n = size_board)

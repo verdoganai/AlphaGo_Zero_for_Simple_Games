@@ -2,10 +2,12 @@ import random
 from minimax import Minimax
 from PawnLogic import Board
 import numpy as np
+from MCTSplayer import PawnBoardState
+from MCTS import MCTS
 
 class Player:
 
-    def ai_player(self, state, depth=2, team = 1):  # creates first successors to implement minimax algorithm
+    def minimax_player(self, state, depth=4, team = 1):  # creates first successors to implement minimax algorithm
         new_shape_x = np.asarray(state[1]).shape
         player1 = Minimax(n = new_shape_x, default_team = team)
         if team == -1:
@@ -32,4 +34,23 @@ class Player:
             print('{0}:{1}'.format(x, elem[1]))
         player_move = int(input('Choose your move number:'))
         return succ_list[player_move]
+
+    def mcts_player(self, state, roll_out = 100, team = 1):
+        new_shape_x = np.asarray(state[1]).shape
+        player4 = Board(n=new_shape_x, default_team = team)
+        if team == -1:
+            state = player4.convert_board_state(state)
+        turnx, board = state
+        board = [tuple(l) for l in board]
+        state = PawnBoardState(turnx, tuple(board), winner = None, terminal = False)
+        tree = MCTS()
+        for _ in range(roll_out):
+            tree.do_rollout(state)
+        state = tree.choose(state)
+        turnx, board = state[0], state[1]
+        new_board = [list(l) for l in board]
+        new_state = [turnx, new_board]
+        if team == -1:
+            new_state = player4.convert_board_state(new_state)
+        return new_state
 
