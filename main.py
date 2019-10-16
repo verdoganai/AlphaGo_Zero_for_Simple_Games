@@ -55,19 +55,20 @@ def game_manager():
 
 
 def export_data(duration, max_score, min_score):
-    print('Score: {0} {1} duration: {2} second'.format(max_score, min_score, time_result))
-    initial_state = start_position(1, 6, 6)  # we coppied starting position to export heap value.
-    with open('Pawn Analysing.txt', 'a') as f:  # export results
-        print(duration, max_score, min_score, initial_state[1], file=f)
+    print('Score: {0} {1} duration: {2} second '.format(max_score, min_score, time_result))
+#   initial_state = start_position(1, 4, 4)  # we coppied starting position to export heap value.
+    with open('U:\Pawn Analysing.txt', 'a') as f:  # export results
+        print(duration, max_score, min_score, file=f)
 
 
 if __name__ == '__main__':
     unit_testing().test_moves()
     unit_testing().winning_positions()
     chosen_players, players_names = game_manager()
-    for x in range(200):
-        max_score, min_score = 0, 0
-        state = start_position(1, 8, 8)
+    max_score, min_score = 0, 0
+    total_game_number = 200
+    for game_number in range(total_game_number):
+        state = start_position(1, 4, 4)
         start = timer()
         size_board = get_shape(state)
         current_board = Board(n = size_board)
@@ -75,12 +76,12 @@ if __name__ == '__main__':
         fig = plt.figure()
         while (True):  # maximum move limit
             plt.imshow(state[1])
-            plt.pause(0.5)
+            plt.pause(0.0001)
             print('%d:' % (turn_switcher + 1) + players_names[turn_switcher] + " player's move:")
             if current_board.terminal_state(state):  # checking whether terminal state or not
                 max_score, min_score = increase_score(state)
                 print(max_score, min_score)
-                plt.pause(2)
+                plt.pause(0.0001)
                 plt.close()
                 break
             next_state = chosen_players[turn_switcher](state)
@@ -89,17 +90,21 @@ if __name__ == '__main__':
             move_counter += 1
             turn_switcher = move_counter % 2  # switching turn
             state = next_state
-            if move_counter >= 2000:  # checking whether list and move count to finish game.
+            if game_number >= total_game_number-1:  # checking whether list and move count to finish game.
                 print("Game Over.")
                 if max_score > min_score:
                     print('First player "%s" win.' % players_names[0])
+                    winner_name = players_names[0]
                 elif min_score > max_score:
                     print('Second player "%s" win.' % players_names[1])
+                    winner_name = players_names[1]
                 break
         plt.show()
         end = timer()
         time_result = end - start
         export_data(time_result, max_score, min_score)
+        print(time_result, max_score, min_score)
+    plt.close()
 
 
 

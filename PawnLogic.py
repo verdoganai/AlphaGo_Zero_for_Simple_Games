@@ -23,7 +23,7 @@ Date: March 6, 2019.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n = (8, 8), default_team = None, turn = None): # visualise all the successors if you choose none
+    def __init__(self, n = (4, 4), default_team = None, turn = None): # visualise all the successors if you choose none
         self.x = n[0]
         self.y = n[1]
         self.default_team = default_team
