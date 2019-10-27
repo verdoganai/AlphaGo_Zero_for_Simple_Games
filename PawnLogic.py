@@ -138,7 +138,6 @@ class Board(): # includes board rules and successor creator
                 legal_moves.append((-active_pawn[0], new_successor))
             except AssertionError as error:
                 continue
-
         #Second move creator (diagonal)
         for active_pawn in all_pawn_positions:
             try:
@@ -148,6 +147,7 @@ class Board(): # includes board rules and successor creator
             except AssertionError as error:
                 continue
         extracted_legal_moves = self.extract_legal_moves_considering_team(legal_moves, self.turn)
+        random.shuffle(extracted_legal_moves)
         return extracted_legal_moves
 
     def board_position_assigner(self, state): # assign any board position and team as initial state.

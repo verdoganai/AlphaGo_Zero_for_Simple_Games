@@ -37,6 +37,7 @@ class Minimax(Board):
         a, b = -250, 250
         last_generation = super().successor_generator(board_state)
         last_generation_utilies = [self.minimax(x, a, b, depth) for x in last_generation]
+        print(last_generation_utilies)
         combined = list(zip(last_generation, last_generation_utilies))
         best_selector = compare[board_state[0]]
         result = best_selector(combined, key=lambda item: item[1])
