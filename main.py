@@ -62,8 +62,8 @@ def export_data(duration, max_score, min_score):
 
 
 if __name__ == '__main__':
-    #unit_testing().test_moves()
-    #unit_testing().winning_positions()
+    unit_testing().test_moves()
+    unit_testing().winning_positions()
     chosen_players, players_names = game_manager()
     max_score, min_score = 0, 0
     total_game_number = 200
