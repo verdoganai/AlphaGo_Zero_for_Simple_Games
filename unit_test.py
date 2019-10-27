@@ -32,8 +32,7 @@ class unit_testing(unittest.TestCase):
                                        (-1, [[0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0], [0, -1, -1, -1, 0, 1], [0, -1, 0, 0, 0, 0], [-1, 1, 0, 1, 0, -1], [0, 0, 0, 0, 0, 0]]),
                                        (-1, [[0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 0], [0, 1, -1, -1, 0, 1], [1, -1, 0, 0, 0, 0], [-1, -1, 0, 1, 0, -1], [0, 0, 0, 0, 0, 0]]),
                                        (-1, [[0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 0], [0, -1, -1, 1, 0, 1], [1, -1, 0, 0, 0, 0], [-1, -1, 0, 1, 0, -1], [0, 0, 0, 0, 0, 0]])]
-
-        self.assertEqual(yellow_successor_list, test_yellow_team_successors)
+        self.assertEqual(sorted(yellow_successor_list), sorted(test_yellow_team_successors))
 
         test_purple_team_sucessors = [(1, [[0, 0, 0, 0, 0, 0], [0, -1, 1, 1, 1, 0], [0, 0, -1, -1, 0, 1], [1, -1, 0, 0, 0, 0], [-1, -1, 0, 1, 0, -1], [0, 0, 0, 0, 0, 0]]),
                                       (1, [[0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0], [0, -1, -1, -1, 0, 1], [1, -1, 0, 0, 0, -1], [-1, -1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0]]),
@@ -46,7 +45,7 @@ class unit_testing(unittest.TestCase):
         compare_purple_team = (teams['Purple'], reference_board_state)
         test_board.board_position_assigner(compare_purple_team)
         purple_successor_list = test_board.successor_generator()
-        self.assertEqual(purple_successor_list, test_purple_team_sucessors)
+        self.assertEqual(sorted(purple_successor_list), sorted(test_purple_team_sucessors))
         print('succesful move test')
 
     def toggle(self, state):
