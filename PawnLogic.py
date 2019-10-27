@@ -181,7 +181,7 @@ class Board(): # includes board rules and successor creator
         else:
             return False
 
-    def heuristic_value(self, board_state, depth=float('inf')):
+    def heuristic_value(self, board_state, depth=5e103):
         assert self.terminal_state(board_state, depth) # manhattan distance has been used for heuristic.
         turn, board = board_state[0], board_state[1]
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
@@ -191,7 +191,7 @@ class Board(): # includes board rules and successor creator
         created_moves = self.successor_generator(board_state)
         if not created_moves:  # no moves due to no pawn or pawn stacks
             return (-(100+depth*0.001))*turn
-        if depth is not float('inf'):
+        if depth is not 5e103:
             self.board_position_assigner(board_state)
             pawn_positions_list = self.get_pawn_positions()
             yellow_team = []
