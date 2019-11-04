@@ -43,10 +43,12 @@ def game_manager():
     chosen_players = [players[player_1], players[player_2]]  # collecting chosen players to create a turn switcher.
     first_player, _ = chosen_players[0].__name__.split('_')
     if chosen_players[1] == game.minimax_player:
-        chosen_players[1] = partial(game.minimax_player, team=-1)
+        print('minimax has ben chosen as second player')
+        chosen_players[1] = partial(game.minimax_player, team=-1, depth=5)
         chosen_players[1].__name__ = "minimax_player"
     if chosen_players[1] == game.mcts_player:
-        chosen_players[1] = partial(game.mcts_player, team=-1)
+        print('mcts has ben chosen as second player')
+        chosen_players[1] = partial(game.mcts_player, team=-1, roll_out=500)
         chosen_players[1].__name__ = "mcts_player"
     second_player, _ = chosen_players[1].__name__.split('_')
     players_names = [first_player, second_player]  # collecting chosen players' names to illustrate whose turn.
@@ -57,7 +59,7 @@ def game_manager():
 def export_data(duration, max_score, min_score):
     print('Score: {0} {1} duration: {2} second '.format(max_score, min_score, time_result))
 #   initial_state = start_position(1, 4, 4)  # we coppied starting position to export heap value.
-    with open('U:\Pawn Analysing.txt', 'a') as f:  # export results
+    with open('U:\Pawn AnalysingMCTS1vsMCTS.txt', 'a') as f:  # export results
         print(duration, max_score, min_score, file=f)
 
 

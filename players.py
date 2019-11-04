@@ -7,9 +7,10 @@ from MCTS import MCTS
 
 class Player:
 
-    def minimax_player(self, state, depth=4, team = 1):  # creates first successors to implement minimax algorithm
+    def minimax_player(self, state, depth=1, team = 1):  # creates first successors to implement minimax algorithm
         new_shape_x = np.asarray(state[1]).shape
         player1 = Minimax(n = new_shape_x, default_team = team)
+        print('default_team', team, player1.default_team)
         if team == -1:
             state = player1.convert_board_state(state)
         best_move = player1.decision_maker(state, depth)
@@ -35,11 +36,11 @@ class Player:
         player_move = int(input('Choose your move number:'))
         return succ_list[player_move]
 
-    def mcts_player(self, state, roll_out = 100, team = 1):
+    def mcts_player(self, state, roll_out = 1, team = 1):
         new_shape_x = np.asarray(state[1]).shape
         player4 = Board(n=new_shape_x, default_team = team)
         if team == -1:
-            state = player4.convert_board_state(state)
+             state = player4.convert_board_state(state)
         turnx, board = state
         board = [tuple(l) for l in board]
         state = PawnBoardState(turnx, tuple(board), winner = None, terminal = False)
