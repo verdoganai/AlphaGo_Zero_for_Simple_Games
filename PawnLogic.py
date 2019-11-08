@@ -23,7 +23,10 @@ Date: March 6, 2019.
 
 class Board(): # includes board rules and successor creator
 
-    def __init__(self, n = (4, 4), default_team = None, turn = None): # visualise all the successors if you choose none
+    def __init__(self, n = (4, 4), default_team = None, turn = None, advance_option = False):
+
+        self.advance_option = advance_option
+        # visualise all the successors if you choose none
         self.x = n[0]
         self.y = n[1]
         self.default_team = default_team
@@ -182,6 +185,7 @@ class Board(): # includes board rules and successor creator
             return False
 
     def heuristic_value(self, board_state, depth=5e103):
+
         assert self.terminal_state(board_state, depth) # manhattan distance has been used for heuristic.
         turn, board = board_state[0], board_state[1]
         if -1 in board[0]:  # check the last rows if there is pawn or not. We are yellow as default.
@@ -225,6 +229,9 @@ class Board(): # includes board rules and successor creator
             distance_score = ((-1)**(distance_score+1))*distance_score
 
             utility_value = promotion_value + 2*pawn_number_difference_value + distance_score
+
+            if self.advance_option == True:
+                utility_value = pawn_number_difference_value
 
             return (utility_value)*turn
 

@@ -44,7 +44,7 @@ def game_manager():
     first_player, _ = chosen_players[0].__name__.split('_')
     if chosen_players[1] == game.minimax_player:
         print('minimax has ben chosen as second player')
-        chosen_players[1] = partial(game.minimax_player, team=-1, depth=5)
+        chosen_players[1] = partial(game.minimax_player, team=-1, depth=5, heuristic_parameter = False)
         chosen_players[1].__name__ = "minimax_player"
     if chosen_players[1] == game.mcts_player:
         print('mcts has ben chosen as second player')
