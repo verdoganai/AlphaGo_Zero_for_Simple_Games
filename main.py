@@ -31,6 +31,7 @@ def increase_score(state):  # increases winner's score as 2 for terminal positio
     return max_score, min_score
 
 def game_manager():
+
     while True:  # determines players by user.
         player_1 = int(input('Determine first player; Random(0), Minimax(1), Human(2), MCTS(3) :'))
         player_2 = int(input('Determine second player; Random(0), Minimax(1), Human(2):, MCTS(3) :'))
@@ -44,7 +45,7 @@ def game_manager():
     first_player, _ = chosen_players[0].__name__.split('_')
     if chosen_players[1] == game.minimax_player:
         print('minimax has ben chosen as second player')
-        chosen_players[1] = partial(game.minimax_player, team=-1, depth=5, heuristic_parameter = False)
+        chosen_players[1] = partial(game.minimax_player, team=-1, depth=2, heuristic_parameter = False)
         chosen_players[1].__name__ = "minimax_player"
     if chosen_players[1] == game.mcts_player:
         print('mcts has ben chosen as second player')
@@ -64,6 +65,7 @@ def export_data(duration, max_score, min_score):
 
 
 if __name__ == '__main__':
+
     unit_testing().test_moves()
     unit_testing().winning_positions()
     chosen_players, players_names = game_manager()
@@ -101,11 +103,13 @@ if __name__ == '__main__':
                     print('Second player "%s" win.' % players_names[1])
                     winner_name = players_names[1]
                 break
+
         plt.show()
         end = timer()
         time_result = end - start
         export_data(time_result, max_score, min_score)
         print(time_result, max_score, min_score)
+
     plt.close()
 
 

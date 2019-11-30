@@ -7,7 +7,7 @@ from MCTS import MCTS
 
 class Player:
 
-    def minimax_player(self, state, depth=5, team = 1, heuristic_parameter=True):  # creates first successors to implement minimax algorithm
+    def minimax_player(self, state, depth=2500000, team = 1, heuristic_parameter=True):  # creates first successors to implement minimax algorithm
         new_shape_x = np.asarray(state[1]).shape
         player1 = Minimax(n = new_shape_x, default_team = team, advance_option = heuristic_parameter)
         print('default_team', team, player1.default_team)
